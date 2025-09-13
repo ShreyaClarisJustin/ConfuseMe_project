@@ -1,0 +1,106 @@
+  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reverse Me Confusingly</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    h1 {
+      font-size: 3em;
+      color: #00ffc8;
+      animation: glitch 1s infinite alternate;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      font-size: 1.2em;
+      width: 60%;
+      border-radius: 10px;
+      border: none;
+      margin-top: 20px;
+    }
+
+    #output {
+      margin-top: 40px;
+      font-size: 2.5em;
+      color: #ff7de9;
+      animation: spinText 6s linear infinite;
+      display: inline-block;
+    }
+
+    #message {
+      margin-top: 20px;
+      color: #aaa;
+      font-style: italic;
+      height: 30px;
+    }
+
+    @keyframes spinText {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px #f0f, -2px -2px #0ff; }
+      100% { text-shadow: -2px -2px #f0f, 2px 2px #0ff; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔁 Reverse Me Confusingly 🔁</h1>
+
+  <input type="text" id="inputText" placeholder="Type anything..." oninput="reverseText()" />
+
+  <div id="output"></div>
+  <div id="message"></div>
+
+  <script>
+    const funnyMessages = [
+      "Now it makes less sense!",
+      "Aliens will understand this.",
+      "Better backwards, right?",
+      "Try reading this out loud!",
+      "Oops! You reversed reality.",
+      "Is this how Shakespeare wrote?",
+      "Now you've done it...",
+      "Palindrome? Not even close.",
+      "This is backwards logic!",
+      "Welcome to ReverseLand!"
+    ];
+
+    function reverseText() {
+      const input = document.getElementById("inputText").value;
+      const reversed = input.split("").reverse().join("");
+      document.getElementById("output").innerText = reversed;
+
+      const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+      document.getElementById("message").innerText = randomMessage;
+    }
+  </script>
+<button onclick="goBack()" style="
+  margin-top: 40px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  background-color: #444;
+  color: white;
+  cursor: pointer;
+">⬅️ Back</button>
+
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
+</body>
+</html>

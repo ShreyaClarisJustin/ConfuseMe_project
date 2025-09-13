@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Runaway Button</title>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #f0f0f0;
+      font-family: sans-serif;
+    }
+
+    #runaway-btn {
+      position: absolute;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      transition: top 0.2s, left 0.2s;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="runaway-btn">Click me!</button>
+
+  <script>
+    const button = document.getElementById('runaway-btn');
+    const offset = 100; // distance to flee
+
+    function moveButton(e) {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      const rect = button.getBoundingClientRect();
+      const btnX = rect.left + rect.width / 2;
+      const btnY = rect.top + rect.height / 2;
+
+      const dx = mouseX - btnX;
+      const dy = mouseY - btnY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < offset) {
+        const angle = Math.atan2(dy, dx);
+        const moveX = Math.cos(angle) * -offset;
+        const moveY = Math.sin(angle) * -offset;
+
+        const newX = Math.min(window.innerWidth - rect.width, Math.max(0, rect.left + moveX));
+        const newY = Math.min(window.innerHeight - rect.height, Math.max(0, rect.top + moveY));
+
+        button.style.left = newX + 'px';
+        button.style.top = newY + 'px';
+      }
+    }
+
+    document.addEventListener('mousemove', moveButton);
+    // Set initial position
+    button.style.left = '50%';
+    button.style.top = '50%';
+  </script>
+<button onclick="goBack()" style="
+  margin-top: 40px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  background-color: #444;
+  color: white;
+  cursor: pointer;
+">⬅️ Back</button>
+
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
+</body>
+</html>
+
+

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ConfuseMe: Memory Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-color: #4b0082;
+      background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+      background-size: 50px;
+      text-align: center;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .emoji-box {
+      font-size: 3rem;
+      margin: 20px;
+    }
+
+    .question-box {
+      display: none;
+    }
+
+    .question {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+
+    .options button {
+      margin: 10px;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .options button:hover {
+      transform: scale(1.1);
+    }
+
+    #result {
+      margin-top: 25px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #f7ff00;
+    }
+
+    #scoreDisplay {
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .meme-img {
+      display: none;
+      margin-top: 20px;
+      width: 200px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🤪 ConfuseMe: Memory Test</h1>
+  <p>Confuse your brain, but try to score!</p>
+
+  <div class="emoji-box" id="emojiBox">🦄 🍔 🚀</div>
+
+  <div class="question-box" id="questionBox">
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsContainer"></div>
+  </div>
+
+  <div id="result"></div>
+  <div id="scoreDisplay">Score: 0 / 10</div>
+
+  <!-- Correct Answer Image -->
+  <img id="correctImage" src="" alt="Correct Answer" class="meme-img" />
+
+  <!-- Wrong Answer Meme -->
+  <!--<img id="wrongMeme" src="2b51cffd-2a79-4db3-8b77-19cd0f3ed793.png" alt="Thalaruth Ramankutty" class="meme-img" />-->
+  <img id="wrongMeme" src="https://i.pinimg.com/236x/51/dc/04/51dc04188f0b1d0deb2e067ea91311d1.jpg" alt="Thalaruth Ramankutty" class="meme-img" />
+
+  <script>
+    const emojiBox = document.getElementById("emojiBox");
+    const questionBox = document.getElementById("questionBox");
+    const questionText = document.getElementById("questionText");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const result = document.getElementById("result");
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    const correctImage = document.getElementById("correctImage");
+    const wrongMeme = document.getElementById("wrongMeme");
+
+    const emojiSets = [
+      "🦄 🍔 🚀", "🐸 🍕 👾", "🎩 🐱 🎯", "👻 🍩 💻", "🐍 🌮 🛸",
+      "🐶 🍟 📱", "🐼 🍉 🐤", "🎃 🧁 🧠", "👑 🐧 🌈", "🧃 🧸 🧨"
+    ];
+
+    const questions = [
+      { q: "What was the last emoji?", options: ["🦄", "🚀", "🍔", "🥒"], correct: "🚀" },
+      { q: "Which one was in the middle?", options: ["👾", "🐸", "🍕", "👽"], correct: "🍕" },
+      { q: "Did the cat have a hat?", options: ["Yes", "No", "Maybe", "What cat?"], correct: "Yes" },
+      { q: "Which dessert appeared?", options: ["Cake", "Donut", "Muffin", "No dessert"], correct: "Donut" },
+      { q: "Which alien vehicle showed up?", options: ["Rocket", "Flying saucer", "Bike", "None"], correct: "Flying saucer" },
+      { q: "Which animal was first?", options: ["Dog", "Cat", "Panda", "Mouse"], correct: "Dog" },
+      { q: "What fruit appeared?", options: ["Watermelon", "Banana", "Apple", "Orange"], correct: "Watermelon" },
+      { q: "What did you see?", options: ["Cake", "Brain", "Cup", "Ghost"], correct: "Brain" },
+      { q: "Which bird?", options: ["Penguin", "Peacock", "Chicken", "Eagle"], correct: "Penguin" },
+      { q: "What drink was shown?", options: ["Milk", "Juice", "Tea", "Coffee"], correct: "Juice" }
+    ];
+
+    const funnyLines = [
+      "Your brain is 1% more confused now.",
+      "Who needs logic anyway?",
+      "Trust your chaos instincts!",
+      "You’re making nonsense look smart!",
+      "Your neurons are doing yoga.",
+      "You blinked and forgot!",
+      "Is this real life or emoji?",
+      "Memory muscle activated!",
+      "Almost a genius!",
+      "You've survived ConfuseMe!"
+    ];
+
+    let round = 0;
+    let score = 0;
+
+    function updateScoreDisplay() {
+      scoreDisplay.textContent = `Score: ${score} / 10`;
+    }
+
+    function startRound() {
+      if (round >= 10) {
+        emojiBox.style.display = "none";
+        questionBox.style.display = "none";
+        correctImage.style.display = "none";
+        wrongMeme.style.display = "none";
+        result.innerHTML = `🎉 Final Score: ${score}/10<br><em>🤯 You’ve mastered the art of confusion!</em>`;
+        return;
+      }
+
+      result.textContent = "";
+      correctImage.style.display = "none";
+      wrongMeme.style.display = "none";
+      emojiBox.textContent = emojiSets[round];
+      emojiBox.style.display = "block";
+      questionBox.style.display = "none";
+
+      setTimeout(() => showQuestion(round), 1500);
+    }
+
+    function showQuestion(index) {
+      emojiBox.style.display = "none";
+      questionBox.style.display = "block";
+
+      const q = questions[index];
+      questionText.textContent = q.q;
+
+      optionsContainer.innerHTML = "";
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.onclick = () => {
+          if (opt === q.correct) {
+            result.innerHTML = `✅ Correct! <br><em>${funnyLines[round]}</em>`;
+            score++;
+            correctImage.src = "https://64.media.tumblr.com/3142c11e1892f86ba6c8152f0f4220d9/tumblr_noqzllmlZN1uwqelio1_1280.jpg";
+            correctImage.style.display = "block";
+            wrongMeme.style.display = "none";
+          } else {
+            result.innerHTML = `❌ Wrong! <br><em>${funnyLines[round]}</em>`;
+            correctImage.style.display = "none";
+            wrongMeme.style.display = "block";
+          }
+          updateScoreDisplay();
+          round++;
+          setTimeout(startRound, 2000);
+        };
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    updateScoreDisplay();
+    startRound();
+  </script>
+  <!-- Back Button -->
+<button id="backButton" style="display: none;">🔙 Back to Start</button>
+
+<!-- Styling for Back Button -->
+<style>
+  #backButton {
+    padding: 10px 20px;
+    background-color: #ff69b4;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+  }
+  #backButton:hover {
+    background-color: #ff1493;
+  }
+</style>
+
+<!-- JavaScript -->
+<div id="feedback"></div>
+
+<button onclick="goBack()" style="
+  margin-top: 40px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  background-color: #444;
+  color: white;
+  cursor: pointer;
+">⬅️ Back</button>
+
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
+
+
+
+</body>
+</html>

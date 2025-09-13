@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎯 Color Trap Challenge</title>
+  <style>
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffe29f, #ffa99f, #ff719a);
+      background-size: 400% 400%;
+      animation: gradientMove 15s ease infinite;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+      color: #333;
+    }
+
+    p {
+      color: #444;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+      padding: 0 20px;
+    }
+
+    #word {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+      padding: 20px 40px;
+      border-radius: 15px;
+      display: inline-block;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      margin: 10px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      transition: transform 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-red { background-color: red; }
+    .btn-green { background-color: green; }
+    .btn-blue { background-color: blue; }
+    .btn-orange { background-color: orange; }
+    .btn-none { background-color: #555; }
+
+    #feedback {
+      font-size: 1.4rem;
+      margin-top: 20px;
+    }
+
+    #imageResult img {
+      margin-top: 20px;
+      max-width: 300px;
+      border-radius: 12px;
+    }
+
+    #backBtn {
+      margin-top: 40px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 Color Trap Challenge</h1>
+  <p>Click the button that matches the <strong>color</strong> of the text — not the word!</p>
+
+  <div id="word">Blue</div>
+
+  <div id="buttons">
+    <button class="btn btn-red" onclick="checkAnswer('red')">Red</button>
+    <button class="btn btn-green" onclick="checkAnswer('green')">Green</button>
+    <button class="btn btn-blue" onclick="checkAnswer('blue')">Blue</button>
+    <button class="btn btn-orange" onclick="checkAnswer('orange')">Orange</button>
+    <button class="btn btn-none" onclick="checkAnswer('none')">None</button>
+  </div>
+
+  <div id="feedback"></div>
+
+  <div id="imageResult">
+    <img id="resultImage" src="" alt="">
+  </div>
+
+  <button id="backBtn" onclick="goBack()">⬅️ Back</button>
+
+  <script>
+    const allColors = ['red', 'green', 'blue', 'orange'];
+    const pastelBackgrounds = [
+      '#fce4ec', '#e0f7fa', '#fff9c4', '#e8f5e9',
+      '#f3e5f5', '#e1f5fe', '#fbe9e7'
+    ];
+    let correctColor = '';
+
+    function startGame() {
+      document.getElementById('feedback').innerText = '';
+      document.getElementById('resultImage').src = '';
+
+      const word = allColors[Math.floor(Math.random() * allColors.length)];
+      correctColor = allColors[Math.floor(Math.random() * allColors.length)];
+      const bgColor = pastelBackgrounds[Math.floor(Math.random() * pastelBackgrounds.length)];
+
+      const wordElement = document.getElementById('word');
+      wordElement.innerText = word.charAt(0).toUpperCase() + word.slice(1);
+      wordElement.style.color = correctColor;
+      wordElement.style.backgroundColor = bgColor;
+    }
+
+    function checkAnswer(selected) {
+      const feedback = document.getElementById('feedback');
+      const img = document.getElementById('resultImage');
+
+      if (selected === correctColor) {
+        feedback.innerText = '✅ Correct!';
+        feedback.style.color = 'green';
+        img.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUxJlQqTeZXmINcVdlxCWC3s04rW5tv_Aoyw&s";
+      } else {
+        feedback.innerText = `❌ Wrong! It was ${correctColor.toUpperCase()}`;
+        feedback.style.color = 'red';
+        img.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQvBfAwf-vRlMQ3Wt0EhjR28sQt7TKoThLjw&s";
+      }
+
+      setTimeout(() => {
+        startGame();
+      }, 1200);
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    startGame();
+  </script>
+
+</body>
+</html>
